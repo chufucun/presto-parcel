@@ -24,16 +24,18 @@ fi
 
 parcel_name="${project.build.finalName}"
 mkdir $parcel_name
+
+echo "[INFO] 1. Extract jdk: $presto_download_url"
 decompressed_dir="extract"
 mkdir $decompressed_dir
-tar xzf $path_jdk_tar_gz -C $decompressed_dir || die "extract $path_jdk_tar_gz fail!"
+tar xzf $path_jdk_tar_gz -C $decompressed_dir || die "Extract $path_jdk_tar_gz fail!"
 mv $decompressed_dir/$(\ls $decompressed_dir) $parcel_name/jdk
 rm -rf $decompressed_dir
 
 
 presto_download_name="presto.tar.gz"
 presto_download_url="${presto.url.base}/presto-server/${presto.version}/presto-server-${presto.version}.tar.gz"
-echo "[INFO] Download Presto: $presto_download_url"
+echo "[INFO] 2. Download Presto: $presto_download_url"
 curl -L -o $presto_download_name $presto_download_url || die "Download Presto fail!"
 mkdir $decompressed_dir
 tar xzf $presto_download_name -C $decompressed_dir
@@ -45,11 +47,12 @@ done
 rm -rf $decompressed_dir
 
 presto_cli_download_url="${presto.url.base}/presto-cli/${presto.version}/presto-cli-${presto.version}-executable.jar"
-echo "[INFO] Download Presto-cli: $presto_cli_download_url"
+echo "[INFO] 3. Download Presto-cli: $presto_cli_download_url"
 curl -L -O $presto_cli_download_url || die "Download Presto-cli fail!"
 mv presto-cli-${presto.version}-executable.jar ${parcel_name}/bin/
 chmod +x ${parcel_name}/bin/presto-cli-${presto.version}-executable.jar
 
+echo "[INFO] 4. Build parcels"
 cat <<"EOF" > ${parcel_name}/bin/presto
 #!/usr/bin/env python
 

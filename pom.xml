@@ -42,7 +42,7 @@
   </build>
 
   <properties>
-    <presto.version>306</presto.version>
+    <presto.version>330</presto.version>
     <presto.url.base>https://repo1.maven.org/maven2/io/prestosql</presto.url.base>
     <jdk.tar.gz.path></jdk.tar.gz.path>
     <parcel.version>${presto.version}.presto${project.version}</parcel.version>

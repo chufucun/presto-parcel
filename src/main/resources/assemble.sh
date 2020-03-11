@@ -1,6 +1,19 @@
 #!/bin/sh
 
 pushd .
+
+set -u  # Check for undefined variables
+
+die() {
+  # Print a message and exit with code 1.
+  #
+  # Usage: die <error_message>
+  #   e.g., die "Something bad happened."
+
+  echo $@
+  exit 1
+}
+
 cd ${project.build.directory}
 
 path_jdk_tar_gz="${jdk.tar.gz.path}"
@@ -13,7 +26,7 @@ parcel_name="${project.build.finalName}"
 mkdir $parcel_name
 decompressed_dir="extract"
 mkdir $decompressed_dir
-tar xzf $path_jdk_tar_gz -C $decompressed_dir
+tar xzf $path_jdk_tar_gz -C $decompressed_dir || die "extract $path_jdk_tar_gz fail!"
 mv $decompressed_dir/$(\ls $decompressed_dir) $parcel_name/jdk
 rm -rf $decompressed_dir
 
@@ -21,7 +34,7 @@ rm -rf $decompressed_dir
 presto_download_name="presto.tar.gz"
 presto_download_url="${presto.url.base}/presto-server/${presto.version}/presto-server-${presto.version}.tar.gz"
 echo "[INFO] Download Presto: $presto_download_url"
-curl -L -o $presto_download_name $presto_download_url
+curl -L -o $presto_download_name $presto_download_url || die "Download Presto fail!"
 mkdir $decompressed_dir
 tar xzf $presto_download_name -C $decompressed_dir
 
@@ -33,7 +46,7 @@ rm -rf $decompressed_dir
 
 presto_cli_download_url="${presto.url.base}/presto-cli/${presto.version}/presto-cli-${presto.version}-executable.jar"
 echo "[INFO] Download Presto-cli: $presto_cli_download_url"
-curl -L -O $presto_cli_download_url
+curl -L -O $presto_cli_download_url || die "Download Presto-cli fail!"
 mv presto-cli-${presto.version}-executable.jar ${parcel_name}/bin/
 chmod +x ${parcel_name}/bin/presto-cli-${presto.version}-executable.jar
 

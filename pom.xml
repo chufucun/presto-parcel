@@ -9,7 +9,7 @@
   <name>presto-parcel</name>
 
   <build>
-    <finalName>${project.artifactId}-${parcel.version}</finalName>
+    <finalName>PRESTO-${parcel.version}</finalName>
 
     <plugins>
       <plugin>

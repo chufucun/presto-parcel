@@ -57,7 +57,7 @@ cp -a ${project.build.outputDirectory}/meta ${parcel_name}
 tar zcf ${parcel_name}.parcel ${parcel_name}/ --owner=root --group=root
 
 mkdir repository
-for i in el5 el6 sles11 lucid precise squeeze wheezy; do
+for i in el6 el7 sles11 lucid precise squeeze wheezy; do
   cp ${parcel_name}.parcel repository/${parcel_name}-${i}.parcel
 done
 

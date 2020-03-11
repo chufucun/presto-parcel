@@ -25,7 +25,7 @@ fi
 parcel_name="${project.build.finalName}"
 mkdir $parcel_name
 
-echo "[INFO] 1. Extract jdk: $presto_download_url"
+echo "[INFO] 1. Extract jdk"
 decompressed_dir="extract"
 mkdir $decompressed_dir
 tar xzf $path_jdk_tar_gz -C $decompressed_dir || die "Extract $path_jdk_tar_gz fail!"

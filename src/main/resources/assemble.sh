@@ -16,12 +16,14 @@ die() {
 
 cd ${project.build.directory}
 
+# validation
 path_jdk_tar_gz="${jdk.tar.gz.path}"
 if [ -z "$path_jdk_tar_gz" -o ! -f "$path_jdk_tar_gz" ]; then
     echo "[ERROR] Set jdk.tar.gz.path property like 'mvn -Djdk.tar.gz.path=/your/path/to/jdk.tar.gz package'"
     exit 1
 fi
 
+# prepare JDK
 parcel_name="${project.build.finalName}"
 mkdir $parcel_name
 
@@ -32,7 +34,7 @@ tar xzf $path_jdk_tar_gz -C $decompressed_dir || die "Extract $path_jdk_tar_gz f
 mv $decompressed_dir/$(\ls $decompressed_dir) $parcel_name/jdk
 rm -rf $decompressed_dir
 
-
+# Download and decompress Presto server
 presto_download_name="presto.tar.gz"
 presto_download_url="${presto.url.base}/presto-server/${presto.version}/presto-server-${presto.version}.tar.gz"
 echo "[INFO] 2. Download Presto: $presto_download_url"
@@ -46,6 +48,7 @@ for file in `\ls $decompressed_dir/$presto_dir`; do
 done
 rm -rf $decompressed_dir
 
+# Download and setup Presto CLI
 presto_cli_download_url="${presto.url.base}/presto-cli/${presto.version}/presto-cli-${presto.version}-executable.jar"
 echo "[INFO] 3. Download Presto-cli: $presto_cli_download_url"
 curl -L -O $presto_cli_download_url || die "Download Presto-cli fail!"
@@ -69,7 +72,13 @@ subprocess.call(cmd, shell=True)
 EOF
 chmod +x ${parcel_name}/bin/presto
 
+# Copy additional files
 cp -a ${project.build.outputDirectory}/meta ${parcel_name}
+if [ -n "${additional.dir.path}" ]; then
+  cp -a ${additional.dir.path}/* ${parcel_name}/
+fi
+
+# Create Parcel file
 tar zcf ${parcel_name}.parcel ${parcel_name}/ --owner=root --group=root
 
 mkdir repository
@@ -77,6 +86,7 @@ for i in el6 el7 sles11 lucid precise squeeze wheezy; do
   cp ${parcel_name}.parcel repository/${parcel_name}-${i}.parcel
 done
 
+# Create manifest
 cd repository
 curl https://raw.githubusercontent.com/cloudera/cm_ext/master/make_manifest/make_manifest.py | python
 

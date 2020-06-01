@@ -8,10 +8,23 @@ mvn -Djdk.tar.gz.path=/your/path/to/jdk.tar.gz package
 ```
 
 - By default, use `prestosql/presto` repository ( https://github.com/prestosql/presto )
-- If you want to use `prestodb/presto` repository ( https://github.com/prestodb/presto ), configure properties for pom
-  - e.g.) use `prestodb/presto` version 0.218:
+- Properties
+  - `jdk.tar.gz.path`: Path to your JDK file (required)
+  - `presto.version`: Presto version (default: `306`)
+  - `presto.url.base`: Presto's Maven URL (default: `https://repo1.maven.org/maven2/io/prestosql`)  
+  - `additional.dir.path`: Path to the directory where additional files (Plugins, ...) are stored (default: none)
+
+
+## Example
+
+- Use `prestodb/presto` repository ( https://github.com/prestodb/presto ), and use Presto 0.218
 ```
-mvn -Dpresto.url.base="https://repo1.maven.org/maven2/com/facebook/presto" -Dpresto.version=0.218 -Djdk.tar.gz.path=/your/path/to/jdk.tar.gz package
+mvn -Djdk.tar.gz.path=/your/path/to/jdk.tar.gz -Dpresto.url.base="https://repo1.maven.org/maven2/com/facebook/presto" -Dpresto.version=0.218 package
+```
+
+- Add Presto Plugin files (`/tmp/work/plugin/your-plugin/xxx.jar`), and use Presto 316
+```
+mvn -Djdk.tar.gz.path=/your/path/to/jdk.tar.gz -Dadditional.dir.path=/tmp/work -Dpresto.version=316 package
 ```
 
 # Deploy
